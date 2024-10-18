@@ -1,5 +1,3 @@
-# app.py
-
 import streamlit as st
 from navbar import display_sidebar
 from home import display_home

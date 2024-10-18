@@ -1,15 +1,7 @@
-# home.py
-
 import streamlit as st
-from navbar import display_sidebar, display_search_input
 
 def display_home():
-    # Display the sidebar
-    display_sidebar()
-
     # Check if search term is requested
-    if st.session_state.get('show_search', False):
-        display_search_input()
 
     # Welcome Banner
     st.markdown("<h2 style='text-align: center;'>Welcome to Knight's Ledger</h2>", unsafe_allow_html=True)

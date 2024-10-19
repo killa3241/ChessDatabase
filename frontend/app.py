@@ -1,3 +1,5 @@
+# app.py
+
 import streamlit as st
 from navbar import display_sidebar
 from home import display_home
@@ -8,5 +10,4 @@ st.set_page_config(page_title="Knight's Ledger", layout="wide")
 # Display the sidebar
 display_sidebar()
 
-# Display the home content
-display_home()
+

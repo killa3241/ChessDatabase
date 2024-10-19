@@ -1,53 +1,91 @@
 import streamlit as st
 
-def create_sidebar_item(icon_path, label):
-    """Create a sidebar item with an icon and label."""
-    st.markdown("<a href='#'>", unsafe_allow_html=True)
-    st.image(icon_path, width=24, use_column_width=False)
-    st.markdown(f"<span>{label}</span></a>", unsafe_allow_html=True)
-
 def display_sidebar():
-    with st.sidebar:
-        st.markdown("<h3 style='text-align: center; margin: 0;'>Knight's Ledger</h3>", unsafe_allow_html=True)
-        st.markdown("<div class='sidebar'>", unsafe_allow_html=True)
-
-        # Create sidebar items using the helper function
-        create_sidebar_item('assets/icons/tournament.png', 'Tournaments')
-        create_sidebar_item('assets/icons/game.png', 'Games')
-        create_sidebar_item('assets/icons/user.png', 'User')
-        create_sidebar_item('assets/icons/profiles.png', 'Profiles')
-        create_sidebar_item('assets/icons/ranking.png', 'Rankings')
-        create_sidebar_item('assets/icons/statistics.png', 'Statistics')
-        create_sidebar_item('assets/icons/settings.png', 'Settings')
-        create_sidebar_item('assets/icons/support.png', 'Support')
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # Sidebar CSS
+    # Custom CSS for sidebar
     st.markdown("""
         <style>
         .sidebar {
             display: flex;
             flex-direction: column;
-            padding: 0; /* Remove padding */
-            margin: 0; /* Remove margin */
+            padding: 10px;
             background-color: #f9f9f9;
             border-radius: 8px;
-            width: 250px; /* Sidebar width */
-            transition: width 0.3s ease-in-out;
         }
-        .sidebar a {
-            display: flex; /* Use flex to align icon and text */
-            align-items: center; /* Center items vertically */
-            padding: 10px 20px; /* Adjust padding as needed */
-            text-decoration: none;
-            font-size: 18px;
+        .sidebar .sidebar-title {
+            text-align: center;
+            font-size: 24px;
+            color: #496C9F;
+            margin-bottom: 20px;
+        }
+        .sidebar button {
+            margin: 5px 0;
+            padding: 10px;
+            border: none;
+            background-color: #e7e7e7;
             color: #333;
             border-radius: 5px;
-            margin: 0; /* Remove margin */
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
         }
-        .sidebar a:hover {
+        .sidebar button:hover {
             background-color: #ddd;
         }
         </style>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+
+    # Sidebar header
+    st.sidebar.markdown("<div class='sidebar-title'>CONTENTS</div>", unsafe_allow_html=True)
+
+    # Initialize page variable if not already in session state
+    if 'page' not in st.session_state:
+        st.session_state.page = "Home"  # Default to Home
+
+    # Navigation buttons
+    if st.sidebar.button("Home"):
+        st.session_state.page = "Home"
+    if st.sidebar.button("Tournaments"):
+        st.session_state.page = "Tournaments"
+    if st.sidebar.button("Games"):
+        st.session_state.page = "Games"
+    if st.sidebar.button("User Profiles"):
+        st.session_state.page = "User Profiles"
+    if st.sidebar.button("Rankings"):
+        st.session_state.page = "Rankings"
+    if st.sidebar.button("Statistics"):
+        st.session_state.page = "Statistics"
+    if st.sidebar.button("Settings"):
+        st.session_state.page = "Settings"
+    if st.sidebar.button("Support"):
+        st.session_state.page = "Support"
+    if st.sidebar.button("Chess Analysis"):
+        st.session_state.page = "Chess Analysis"
+
+    # Display the selected page
+    if st.session_state.page == "Home":
+        from home import display_home
+        display_home()
+    elif st.session_state.page == "Tournaments":
+        from tournaments import display_tournaments
+        display_tournaments()
+    elif st.session_state.page == "Games":
+        from games import display_games
+        display_games()
+    elif st.session_state.page == "User Profiles":
+        from user_profiles import display_user_profiles
+        display_user_profiles()
+    elif st.session_state.page == "Rankings":
+        from rankings import display_rankings
+        display_rankings()
+    elif st.session_state.page == "Statistics":
+        from statistics import display_statistics
+        display_statistics()
+    elif st.session_state.page == "Settings":
+        from settings import display_settings
+        display_settings()
+    elif st.session_state.page == "Support":
+        from support import display_support
+        display_support()
+    elif st.session_state.page == "Chess Analysis":
+        from chess_analysis import display_chess_analysis
+        display_chess_analysis()

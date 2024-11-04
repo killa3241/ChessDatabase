@@ -14,9 +14,25 @@ def display_home():
     all in one place.
     """)
 
-    # Split layout for displaying recent tournaments and user statistics
+    # File upload bar for PGN files
+    st.markdown("---")
+    st.subheader("Upload Your PGN File")
+    uploaded_file = st.file_uploader("Upload a PGN file", type="pgn")
+
+    # Process the uploaded PGN file if it's not None
+    if uploaded_file is not None:
+        # Read and display the PGN file contents (assuming it's a text file)
+        pgn_content = uploaded_file.read().decode("utf-8")
+        st.text_area("PGN File Content", pgn_content, height=300)
+
+        # Success message
+        st.success("PGN file uploaded successfully!")
+
+        # TODO: Add further processing, like parsing and storing in the database
+
     st.markdown("---")  # Horizontal separator
 
+    # Split layout for displaying recent tournaments and user statistics
     # Display columns for recent tournaments and player statistics
     col1, col2 = st.columns(2)
 

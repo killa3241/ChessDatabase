@@ -14,6 +14,8 @@ def main_app():
         display_home()  # Your main app content goes here
     else:
         st.warning("Please log in to access the application.")
+        st.session_state['current_page'] = "login"
+        st.stop()  
 
 # Run the main app function
 if __name__ == "__main__":

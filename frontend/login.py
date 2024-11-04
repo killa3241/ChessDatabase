@@ -36,7 +36,7 @@ def login_page():
     if 'logged_in' not in st.session_state:
         st.session_state['logged_in'] = False
         st.session_state['user_email'] = None
-
+        st.session_state['page'] = "login"
     # If the user is logged in, display app.py instead of login form
     if st.session_state['logged_in']:
         main_app()  # Display main app from app.py
@@ -61,6 +61,7 @@ def login_page():
                 # Store login state
                 st.session_state['logged_in'] = True
                 st.session_state['user_email'] = email
+                st.session_state['page'] = "Home"
             else:
                 st.error("Incorrect email or password.")
     

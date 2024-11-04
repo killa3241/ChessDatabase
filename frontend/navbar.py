@@ -44,6 +44,8 @@ def display_sidebar():
     # Navigation buttons
     if st.sidebar.button("Home"):
         st.session_state.page = "Home"
+    if st.sidebar.button("Your Profile"): 
+        st.session_state.page = "Your Profile"
     if st.sidebar.button("Tournaments"):
         st.session_state.page = "Tournaments"
     if st.sidebar.button("Games"):
@@ -61,10 +63,19 @@ def display_sidebar():
     if st.sidebar.button("Chess Analysis"):
         st.session_state.page = "Chess Analysis"
 
+    if st.sidebar.button("Logout"):
+        st.session_state.update({
+        "logged_in": False,
+        "user_email": None,
+        "page": "login"  
+    })
     # Display the selected page
     if st.session_state.page == "Home":
         from home import display_home
         display_home()
+    elif st.session_state.page == "Your Profile":
+        from yourprofile import display_profile
+        display_profile()
     elif st.session_state.page == "Tournaments":
         from tournaments import display_tournaments
         display_tournaments()

@@ -69,6 +69,7 @@ def display_sidebar():
         "user_email": None,
         "page": "login"  
     })
+        st.rerun()
     # Display the selected page
     if st.session_state.page == "Home":
         from home import display_home

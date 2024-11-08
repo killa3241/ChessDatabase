@@ -40,6 +40,9 @@ def get_or_create_player(connection, player_name):
     
     return player_id
 
+def generate_game_id():
+    return uuid.uuid4().hex[:8].upper()  # Take the first 8 characters of the UUID and convert to uppercase
+
 def insert_game_and_moves_to_db(connection, parsed_game):
     cursor = connection.cursor()
 
@@ -50,13 +53,18 @@ def insert_game_and_moves_to_db(connection, parsed_game):
     # Map the time control to ENUM values or default to 'Classical'
     game_type = parsed_game.game.get('time_control', 'Classical')
     game_type = time_control_mapping.get(game_type, 'Classical')
+    white_elo = parsed_game.game.get('white_elo') if parsed_game.game.get('white_elo') else None
+    black_elo = parsed_game.game.get('black_elo') if parsed_game.game.get('black_elo') else None
+    # Generate a unique alphanumeric game_id
+    game_id = generate_game_id()
 
     # Insert the game record into the `game` table
     insert_game_query = """
-    INSERT INTO game (site, date, white_name, white_id, black_name, black_id, result, type, white_elo, black_elo, termination, eco, endtime, link, number_of_moves, tournament_id)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NULL)
+    INSERT INTO game (game_id, site, date, white_name, white_id, black_name, black_id, result, type, white_elo, black_elo, termination, eco, endtime, link, number_of_moves, tournament_id)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NULL)
     """
     game_data = (
+        game_id,
         parsed_game.game.get('site', 'Unknown'),
         parsed_game.tournament.get('date', '0000.00.00'),
         parsed_game.players['white'].get('name', 'Unknown'),
@@ -64,9 +72,9 @@ def insert_game_and_moves_to_db(connection, parsed_game):
         parsed_game.players['black'].get('name', 'Unknown'),
         black_id,
         parsed_game.game.get('result', '*'),
-        game_type,  # Ensured ENUM type
-        parsed_game.players['white'].get('elo'),
-        parsed_game.players['black'].get('elo'),
+        game_type,
+        white_elo,
+        black_elo,
         parsed_game.game.get('termination', 'Unknown'),
         parsed_game.game.get('eco', 'N/A'),
         parsed_game.game.get('endtime'),
@@ -74,7 +82,6 @@ def insert_game_and_moves_to_db(connection, parsed_game):
         len(parsed_game.moves)
     )
     cursor.execute(insert_game_query, game_data)
-    game_id = cursor.lastrowid  # Get the ID of the inserted game
 
     # Insert moves into the `move` table
     insert_move_query = """
@@ -89,6 +96,14 @@ def insert_game_and_moves_to_db(connection, parsed_game):
     connection.commit()
     cursor.close()
 
+def fetch_user_name(connection, email):
+    cursor = connection.cursor(dictionary=True)
+    query = "SELECT name FROM player WHERE email = %s"
+    cursor.execute(query, (email,))
+    user = cursor.fetchone()
+    cursor.close()
+    return user['name'] if user and user['name'] else ""
+
 def display_home():
     # Connect to the database
     connection = mysql.connector.connect(
@@ -98,8 +113,22 @@ def display_home():
         database="chess_db"
     )
 
-    st.title("Welcome to Knight's Ledger")
+    # Get the logged-in user's email from session state
+    user_email = st.session_state.get('user_email')
+    user_name = fetch_user_name(connection, user_email)
+    if user_name:
+        st.title(f"Welcome to Knight's Ledger, {user_name}!")
+    else:
+        st.title("Welcome to Knight's Ledger!")
     st.markdown("#### Your Chess Database Management System")
+
+    # Check if the profile is incomplete
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute("SELECT profile_complete FROM player WHERE email = %s", (user_email,))
+    user_profile = cursor.fetchone()
+
+    if user_profile and not user_profile.get('profile_complete'):
+        st.warning("Please update your profile information by going to 'Your Profile'.")
 
     st.subheader("Upload Your PGN File")
     uploaded_file = st.file_uploader("Upload a PGN file", type="pgn")
@@ -107,7 +136,7 @@ def display_home():
     if uploaded_file is not None:
         # Convert the uploaded file to a string-based IO
         pgn_content = StringIO(uploaded_file.getvalue().decode("utf-8")).read()
-        st.text_area("PGN File Content", pgn_content, height=300)
+        # st.text_area("PGN File Content", pgn_content, height=300)
 
         # Parse the PGN content
         parsed_games = parse_pgn(pgn_content)
@@ -121,52 +150,6 @@ def display_home():
 
     # Close the connection
     connection.close()
-
-    # Display additional sections
-    st.markdown("---")
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("Recent Tournaments")
-        tournaments = [
-            {"Name": "City Open 2024", "Winner": "John Doe", "Date": "Oct 15, 2024"},
-            {"Name": "National Chess Challenge", "Winner": "Jane Smith", "Date": "Oct 12, 2024"},
-            {"Name": "Knight's Battle Royale", "Winner": "Arthur King", "Date": "Oct 10, 2024"}
-        ]
-        tournament_data = pd.DataFrame(tournaments)
-        st.table(tournament_data)
-
-    with col2:
-        st.subheader("Top Player Rankings")
-        players = [
-            {"Player": "Magnus Carlsen", "Rating": 2847, "Games Played": 1250},
-            {"Player": "Ian Nepomniachtchi", "Rating": 2789, "Games Played": 1180},
-            {"Player": "Fabiano Caruana", "Rating": 2764, "Games Played": 1140}
-        ]
-        player_data = pd.DataFrame(players)
-        st.table(player_data)
-
-    st.markdown("---")
-    st.subheader("Recent Games")
-    games = [
-        {"White": "Magnus Carlsen", "Black": "Ian Nepomniachtchi", "Result": "1-0", "Date": "Oct 18, 2024"},
-        {"White": "Fabiano Caruana", "Black": "Vishy Anand", "Result": "0.5-0.5", "Date": "Oct 17, 2024"},
-        {"White": "Hikaru Nakamura", "Black": "Alireza Firouzja", "Result": "0-1", "Date": "Oct 16, 2024"}
-    ]
-    game_data = pd.DataFrame(games)
-    st.table(game_data)
-
-    st.markdown("---")
-    st.subheader("Filter Recent Games")
-    selected_player = st.selectbox("Select a player:", options=["All"] + [game["White"] for game in games] + [game["Black"] for game in games])
-    
-    if selected_player != "All":
-        filtered_games = game_data[(game_data["White"] == selected_player) | (game_data["Black"] == selected_player)]
-    else:
-        filtered_games = game_data
-
-    st.write(f"Recent games for {selected_player}:")
-    st.table(filtered_games)
 
 if __name__ == "__main__":
     display_home()

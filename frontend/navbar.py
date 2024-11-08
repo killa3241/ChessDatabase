@@ -56,12 +56,8 @@ def display_sidebar():
         st.session_state.page = "Rankings"
     if st.sidebar.button("Statistics"):
         st.session_state.page = "Statistics"
-    if st.sidebar.button("Settings"):
-        st.session_state.page = "Settings"
     if st.sidebar.button("Support"):
         st.session_state.page = "Support"
-    if st.sidebar.button("Chess Analysis"):
-        st.session_state.page = "Chess Analysis"
 
     if st.sidebar.button("Logout"):
         st.session_state.update({
@@ -92,12 +88,6 @@ def display_sidebar():
     elif st.session_state.page == "Statistics":
         from statistics import display_statistics
         display_statistics()
-    elif st.session_state.page == "Settings":
-        from settings import display_settings
-        display_settings()
     elif st.session_state.page == "Support":
         from support import display_support
         display_support()
-    elif st.session_state.page == "Chess Analysis":
-        from chess_analysis import display_chess_analysis
-        display_chess_analysis()

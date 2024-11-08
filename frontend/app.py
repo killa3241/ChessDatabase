@@ -11,7 +11,7 @@ def main_app():
     if 'logged_in' in st.session_state and st.session_state['logged_in']:
         # Display the sidebar and main content
         display_sidebar()
-        display_home()  # Your main app content goes here
+        #display_home()  # Your main app content goes here
     else:
         st.warning("Please log in to access the application.")
         st.session_state['current_page'] = "login"

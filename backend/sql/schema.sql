@@ -10,9 +10,21 @@ CREATE TABLE IF NOT EXISTS player (
     password VARCHAR(255) DEFAULT NULL,                 -- Hashed password (must be stored securely)
     online_profile VARCHAR(255) DEFAULT NULL,       -- Links to online profiles (optional)
     date_of_birth DATE DEFAULT NULL,                -- Player's date of birth (optional)
-    gender ENUM('Male', 'Female', 'Other') DEFAULT NULL -- Gender (optional, Default: 'Unknown')
+    gender ENUM('Male', 'Female', 'Other') DEFAULT NULL, -- Gender (optional, Default: 'Unknown')
+    profile_complete BOOLEAN DEFAULT 0
 );
-
+/*
+DELIMITER //
+CREATE TRIGGER after_player_insert
+AFTER INSERT ON player
+FOR EACH ROW
+BEGIN
+    -- Set profile_complete to 0 (incomplete) for the newly registered user
+    UPDATE player SET profile_complete = 0 WHERE player_id = NEW.player_id;
+END;
+//
+DELIMITER ;
+*/
 CREATE TABLE IF NOT EXISTS tournament (
     tournament_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique Tournament ID (Primary Key)
     name VARCHAR(100) NOT NULL,                     -- Name of the tournament
@@ -24,7 +36,7 @@ CREATE TABLE IF NOT EXISTS tournament (
 );
 
 CREATE TABLE IF NOT EXISTS game (
-    game_id INT AUTO_INCREMENT PRIMARY KEY,        -- Game ID (Primary Key)
+    game_id VARCHAR(8) PRIMARY KEY,        -- Game ID (Primary Key)
     site VARCHAR(100) DEFAULT 'Unknown',           -- Site of the game (Default: 'Unknown')
     date DATE DEFAULT NULL,                -- Date of the game (Default: current date)
     round INT DEFAULT NULL,                        -- Round (if applicable, Default: NULL)
@@ -49,8 +61,26 @@ CREATE TABLE IF NOT EXISTS game (
     CONSTRAINT unique_game UNIQUE (game_id)        -- Ensuring unique game IDs
 );
 
+DELIMITER //
+CREATE TRIGGER update_player_rating_after_game
+AFTER INSERT ON game
+FOR EACH ROW
+BEGIN
+    IF NEW.white_elo IS NOT NULL THEN
+        UPDATE player
+        SET rating = NEW.white_elo
+        WHERE player_id = NEW.white_id;
+    END IF;
+    IF NEW.black_elo IS NOT NULL THEN
+        UPDATE player
+        SET rating = NEW.black_elo
+        WHERE player_id = NEW.black_id;
+    END IF;
+END //
+DELIMITER ;
+
 CREATE TABLE IF NOT EXISTS move (
-    game_id INT,                               -- Reference to the game (Foreign Key)
+    game_id VARCHAR(8),                               -- Reference to the game (Foreign Key)
     move_number INT NOT NULL,                  -- Move number (1, 2, 3, ...)
     white_move VARCHAR(20) NOT NULL,           -- White's move (in algebraic notation)
     black_move VARCHAR(20) DEFAULT NULL,       -- Black's move (can be NULL if the game ends before black's move)

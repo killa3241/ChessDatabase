@@ -32,8 +32,8 @@ def parse_pgn(pgn_content):
         parsed_game.tournament["name"] = headers_dict.get("Event", "Unknown")
         parsed_game.tournament["site"] = headers_dict.get("Site", "Unknown")
         parsed_game.tournament["date"] = headers_dict.get("Date", "0000.00.00")
-        parsed_game.game["white_elo"] = headers_dict.get("WhiteElo", None)
-        parsed_game.game["black_elo"] = headers_dict.get("BlackElo", None)
+        parsed_game.game["white_elo"] = int(headers_dict["WhiteElo"]) if headers_dict.get("WhiteElo") and headers_dict["WhiteElo"].isdigit() else None
+        parsed_game.game["black_elo"] = int(headers_dict["BlackElo"]) if headers_dict.get("BlackElo") and headers_dict["BlackElo"].isdigit() else None
         parsed_game.game["site"] = parsed_game.tournament["site"]
         parsed_game.game["result"] = headers_dict.get("Result", "*")
         parsed_game.game["termination"] = headers_dict.get("Termination", "Unknown")

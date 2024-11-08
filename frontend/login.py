@@ -3,16 +3,7 @@ import mysql.connector
 import hashlib
 import uuid
 from app import main_app  # Import the main app function from app.py
-from admin import admin_dashboard  # Import admin dashboard function
-
-# Function to connect to the database with default user credentials
-def connect_to_db(user="chess_admin", password="Chessadmin1"):
-    return mysql.connector.connect(
-        host="localhost",
-        user=user,
-        password=password,
-        database="chess_db"
-    )
+from admin import admin_dashboard, connect_to_db  
 
 # Hash function for passwords
 def hash_password(password):
@@ -80,16 +71,19 @@ def login_page():
         if option == "Login":
             if st.button("Login"):
                 user = player_exists(cursor, email)
-                if user and user['password'] == hash_password(password):
-                    st.success("Login successful!")
-                    # Store login state
-                    st.session_state['logged_in'] = True
-                    st.session_state['user_email'] = email
-                    st.session_state['page'] = "Home"
-                    st.session_state['is_admin'] = False
-                    st.rerun()
+                if user:
+                    if user['password'] == hash_password(password):
+                        st.success("Login successful!")
+                        # Store login state
+                        st.session_state['logged_in'] = True
+                        st.session_state['user_email'] = email
+                        st.session_state['page'] = "Home"
+                        st.session_state['is_admin'] = False
+                        st.rerun()
+                    else:
+                            st.error("Incorrect email or password.")
                 else:
-                    st.error("Incorrect email or password.")
+                    st.error("User not found. Please register first.")
         
         elif option == "Register":
             if st.button("Register"):
@@ -97,7 +91,12 @@ def login_page():
                     st.warning("User with this email already exists. Please login.")
                 else:
                     add_player(cursor, db, email, password)
-                    st.success("Registration successful! You can now log in.")
+                    st.success("Registration successful!")
+                    st.session_state['logged_in'] = True
+                    st.session_state['user_email'] = email
+                    st.session_state['page'] = "Home"
+                    st.session_state['is_admin'] = False
+                    st.rerun()
 
     elif login_type == "Admin":
         # Admin ID and Password input fields

@@ -55,17 +55,3 @@ def display_tournaments():
             except Exception as e:
                 st.error("Error adding tournament to database.")
                 st.write(e)
-
-    # Example display of existing tournaments (Replace with database data if needed)
-    tournaments = [
-        {"Name": "City Open 2024", "Date": "Oct 15, 2024", "Location": "New York", "Participants": 100},
-        {"Name": "National Chess Challenge", "Date": "Oct 12, 2024", "Location": "Los Angeles", "Participants": 150},
-        {"Name": "Knight's Battle Royale", "Date": "Oct 10, 2024", "Location": "San Francisco", "Participants": 80}
-    ]
-    
-    for tournament in tournaments:
-        st.subheader(tournament['Name'])
-        st.write(f"**Date:** {tournament['Date']}")
-        st.write(f"**Location:** {tournament['Location']}")
-        st.write(f"**Participants:** {tournament['Participants']}")
-        st.markdown("---")

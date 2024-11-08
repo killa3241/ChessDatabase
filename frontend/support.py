@@ -10,5 +10,4 @@ def display_support():
     """)
     
     st.write("### Contact Us")
-    st.write("Email: support@knightsledger.com")
-    st.write("Phone: +1-234-567-890")
+    st.write("Email: akshaysimha04@gmail.com","Email: anikaitmohan04@gmail.com")

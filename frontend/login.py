@@ -3,7 +3,14 @@ import mysql.connector
 import hashlib
 import uuid
 from app import main_app  # Import the main app function from app.py
-from admin import admin_dashboard, connect_to_db  
+from admin import admin_dashboard
+def connect_to_db(user="chess_user",password="user123"):
+    return mysql.connector.connect(
+        host="localhost",
+        user=user,
+        password=password,
+        database="chess_db"
+    ) 
 
 # Hash function for passwords
 def hash_password(password):
@@ -17,7 +24,7 @@ def player_exists(cursor, email):
 
 def generate_unique_player_id(cursor):
     while True:
-        player_id = uuid.uuid4().hex[:15]
+        player_id = uuid.uuid4().hex[:15].upper()
         # Check if the player_id already exists in the database
         cursor.execute("SELECT 1 FROM player WHERE player_id = %s", (player_id,))
         if cursor.fetchone() is None:
@@ -114,6 +121,7 @@ def login_page():
                 # Store admin login state
                 st.session_state['logged_in'] = True
                 st.session_state['admin_id'] = admin_id
+                st.session_state['admin_password'] = admin_password
                 st.session_state['is_admin'] = True  # Track admin state
                 st.session_state['page'] = "Admin Dashboard"
                 st.rerun()

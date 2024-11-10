@@ -1,20 +1,54 @@
 import streamlit as st
 import mysql.connector
+import pandas as pd
 
 # Function to connect to the database
-def connect_to_db(user="chess_admin", password="Chessadmin1", database="chess_db"):
+def connect_to_db():
     return mysql.connector.connect(
         host="localhost", 
-        user=user, 
-        password=password, 
-        database=database
+        user=st.session_state.get('admin_id'),
+        password=st.session_state.get('admin_password'),
+        database="chess_db"
     )
 
 def view_table(cursor, table_name, title):
-    cursor.execute(f"SELECT * FROM {table_name}")
+    if(table_name=="tournament"):
+        cursor.execute(f"SELECT * FROM {table_name}")
+        columns = ["Tournament ID", "Name", "Date", "Duration", "Location", "Type", "Organizer"]
+    elif(table_name=="player"):
+        cursor.execute(f"SELECT player_id, name, country, rating, email FROM {table_name}")
+        columns = ["Player ID", "Name", "Country", "Rating", "Email"]
+    elif(table_name=="game"):
+        cursor.execute(f"SELECT game_id, site, white_name, black_name, result, termination, number_of_moves FROM {table_name}")
+        columns = ["Game ID", "Site", "White", "Black", "Result", "Termination", "Total moves"]
+
     records = cursor.fetchall()
-    st.subheader(title)
-    st.table(records) if records else st.info(f"No records found in {title.lower()}.")
+    if records:
+        # Convert records to DataFrame
+        df = pd.DataFrame(records)
+        # Ensure the DataFrame uses specified columns
+        df.columns = columns
+        # Add an Index column starting from 1
+        df.insert(0, "Index", range(1, len(df) + 1))
+        # Set the Index column as the index
+        df = df.set_index("Index")
+        st.subheader(title)
+        items_per_page = 20
+        total_items = len(df)
+        total_pages = (total_items + items_per_page - 1) // items_per_page
+
+        # Create a pagination control
+        page = st.number_input("Page", min_value=1, max_value=total_pages, step=1, value=1)
+
+        # Calculate start and end indices of the current page
+        start_index = (page - 1) * items_per_page
+        end_index = start_index + items_per_page
+
+        # Display the current page of data with pagination
+        st.dataframe(df.iloc[start_index:end_index], use_container_width=True)
+    else:
+        st.subheader(title)
+        st.info(f"No records found in {title.lower()}.")
 
 # Delete a record by ID from a specified table
 def delete_record(cursor, db, table_name, record_id, id_column):
@@ -30,6 +64,7 @@ def delete_record(cursor, db, table_name, record_id, id_column):
 def logout():
     st.session_state['logged_in'] = False
     st.session_state['admin_id'] = None
+    st.session_state['admin_password'] = None  # Reset the password as well
     st.success("You have been logged out.")
     st.rerun()  # Refreshes the page
 

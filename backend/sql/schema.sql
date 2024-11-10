@@ -7,26 +7,60 @@ CREATE TABLE IF NOT EXISTS player (
     country VARCHAR(100) DEFAULT NULL,                  -- Country of the player
     rating INT DEFAULT NULL,                         -- Player's rating (Default: NULL)
     email VARCHAR(100) UNIQUE,                      -- Player's email (must be unique)
-    password VARCHAR(255) DEFAULT NULL,                 -- Hashed password (must be stored securely)
-    online_profile VARCHAR(255) DEFAULT NULL,       -- Links to online profiles (optional)
-    date_of_birth DATE DEFAULT NULL,                -- Player's date of birth (optional)
-    gender ENUM('Male', 'Female', 'Other') DEFAULT NULL, -- Gender (optional, Default: 'Unknown')
-    profile_complete BOOLEAN DEFAULT 0
+    password VARCHAR(255) DEFAULT NULL,                 -- Hashed password (stored securely)
+    online_profile VARCHAR(255) DEFAULT NULL,       -- Links to online profiles
+    date_of_birth DATE DEFAULT NULL,                -- Player's date of birth
+    gender ENUM('Male', 'Female', 'Other') DEFAULT NULL -- Gender
 );
-/*
+
+CREATE TABLE IF NOT EXISTS profile_status (
+    player_id VARCHAR(15) PRIMARY KEY,
+    is_profile_complete BOOLEAN DEFAULT 0,
+    FOREIGN KEY (player_id) REFERENCES player(player_id) ON DELETE CASCADE
+);
+
 DELIMITER //
 CREATE TRIGGER after_player_insert
 AFTER INSERT ON player
 FOR EACH ROW
 BEGIN
-    -- Set profile_complete to 0 (incomplete) for the newly registered user
-    UPDATE player SET profile_complete = 0 WHERE player_id = NEW.player_id;
-END;
-//
+    DECLARE profile_complete BOOLEAN;
+    SET profile_complete = 
+        (NEW.name IS NOT NULL AND 
+         NEW.country IS NOT NULL AND 
+         NEW.rating IS NOT NULL AND 
+         NEW.date_of_birth IS NOT NULL AND 
+         NEW.gender IS NOT NULL);
+    INSERT INTO profile_status (player_id, is_profile_complete)
+    VALUES (NEW.player_id, profile_complete)
+    ON DUPLICATE KEY UPDATE is_profile_complete = profile_complete;
+END //
 DELIMITER ;
-*/
+
+DELIMITER //
+CREATE TRIGGER after_player_update
+AFTER UPDATE ON player
+FOR EACH ROW
+BEGIN
+    DECLARE profile_complete BOOLEAN;
+
+    -- Check if all required fields are filled
+    SET profile_complete = 
+        (NEW.name IS NOT NULL AND 
+         NEW.country IS NOT NULL AND 
+         NEW.rating IS NOT NULL AND 
+         NEW.date_of_birth IS NOT NULL AND 
+         NEW.gender IS NOT NULL);
+
+    -- Update the profile_status table if the player already exists
+    UPDATE profile_status
+    SET is_profile_complete = profile_complete
+    WHERE player_id = NEW.player_id;
+END //
+DELIMITER ;
+
 CREATE TABLE IF NOT EXISTS tournament (
-    tournament_id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique Tournament ID (Primary Key)
+    tournament_id VARCHAR(6) PRIMARY KEY,  -- Unique Tournament ID (Primary Key)
     name VARCHAR(100) NOT NULL,                     -- Name of the tournament
     date DATE NOT NULL,                             -- Date of the tournament
     duration INT NOT NULL,                          -- Duration of the tournament (in days)
@@ -45,7 +79,7 @@ CREATE TABLE IF NOT EXISTS game (
     black_name VARCHAR(100) NOT NULL,              -- Black player's name (required)
     black_id VARCHAR(15) NOT NULL,                         -- Foreign key usage
     result ENUM('1-0', '0-1', '1/2-1/2', '*') DEFAULT '*',  -- Default: '*' (ongoing or unknown result)
-    type ENUM('Classical', 'Rapid', 'Blitz', 'Bullet') DEFAULT 'Classical', -- Default: 'Classical'
+    type VARCHAR(20), 
     white_elo INT DEFAULT NULL,                    -- White player's ELO rating (Default: NULL if not applicable)
     black_elo INT DEFAULT NULL,                    -- Black player's ELO rating (Default: NULL if not applicable)
     termination VARCHAR(255) DEFAULT 'Unknown',    -- How the game ended (Default: 'Unknown')
@@ -53,7 +87,7 @@ CREATE TABLE IF NOT EXISTS game (
     endtime TIME DEFAULT NULL,                     -- End time of the game (if applicable, Default: NULL)
     link VARCHAR(255) DEFAULT NULL,                -- Link to the game (if applicable, Default: NULL)
     number_of_moves INT DEFAULT 0,                 -- Default: 0 moves if not specified
-    tournament_id INT DEFAULT NULL,                -- Tournament ID (if applicable, Default: NULL)
+    tournament_id VARCHAR(6) DEFAULT NULL,                -- Tournament ID (if applicable, Default: NULL)
 
     FOREIGN KEY (white_id) REFERENCES player(player_id) ON DELETE CASCADE,  -- Cascading delete for White player
     FOREIGN KEY (black_id) REFERENCES player(player_id) ON DELETE CASCADE,  -- Cascading delete for Black player
@@ -90,3 +124,76 @@ CREATE TABLE IF NOT EXISTS move (
     FOREIGN KEY (game_id) REFERENCES game(game_id) 
     ON DELETE CASCADE                           -- Cascade delete to remove moves if a game is deleted
 );
+
+DELIMITER //
+
+CREATE PROCEDURE get_player_statistics(IN p_player_id VARCHAR(15))
+BEGIN
+    SELECT 
+        p.player_id,
+        p.name,
+        COUNT(DISTINCT g.game_id) AS total_games,
+        SUM(CASE 
+            WHEN (g.white_id = p.player_id AND g.result = '1-0') 
+                OR (g.black_id = p.player_id AND g.result = '0-1') 
+            THEN 1 ELSE 0 END) AS wins,
+        SUM(CASE 
+            WHEN g.result = '1/2-1/2' THEN 1 ELSE 0 END) AS draws,
+        ROUND(
+            100.0 * SUM(CASE 
+                WHEN (g.white_id = p.player_id AND g.result = '1-0') 
+                    OR (g.black_id = p.player_id AND g.result = '0-1') 
+                THEN 1 ELSE 0 END) / NULLIF(COUNT(DISTINCT g.game_id), 0), 2) AS win_rate,
+        ROUND(
+            AVG(CASE WHEN g.white_id = p.player_id THEN g.black_elo ELSE g.white_elo END), 
+        2) AS avg_opponent_elo,
+        MAX(CASE WHEN g.white_id = p.player_id THEN g.black_elo ELSE g.white_elo END) AS highest_opponent_elo,
+        (
+            SELECT type 
+            FROM game g2
+            WHERE (g2.white_id = p.player_id OR g2.black_id = p.player_id)
+            GROUP BY type
+            ORDER BY COUNT(*) DESC
+            LIMIT 1
+        ) AS preferred_time_control,
+        (
+            SELECT white_move
+            FROM (
+                SELECT m.white_move, COUNT(*) as move_count
+                FROM game g3
+                JOIN move m ON g3.game_id = m.game_id
+                WHERE g3.white_id = p.player_id AND m.move_number = 1
+                GROUP BY m.white_move
+                ORDER BY move_count DESC
+                LIMIT 1
+            ) white_moves
+        ) AS favorite_white_opening,
+        (
+            SELECT black_move
+            FROM (
+                SELECT m.black_move, COUNT(*) as move_count
+                FROM game g4
+                JOIN move m ON g4.game_id = m.game_id
+                WHERE g4.black_id = p.player_id AND m.move_number = 1
+                GROUP BY m.black_move
+                ORDER BY move_count DESC
+                LIMIT 1
+            ) black_moves
+        ) AS favorite_black_opening
+    FROM player p
+    LEFT JOIN game g ON p.player_id = g.white_id OR p.player_id = g.black_id
+    WHERE p.player_id = p_player_id OR p_player_id IS NULL
+    GROUP BY p.player_id, p.name
+    ORDER BY total_games DESC;
+END//
+
+DELIMITER ;
+
+CREATE TABLE IF NOT EXISTS best_moves (
+    fen VARCHAR(255) PRIMARY KEY,  
+    best_move VARCHAR(10) NOT NULL,
+    evaluation FLOAT NOT NULL DEFAULT 0 
+);
+
+
+

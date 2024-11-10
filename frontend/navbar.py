@@ -50,12 +50,14 @@ def display_sidebar():
         st.session_state.page = "Tournaments"
     if st.sidebar.button("Games"):
         st.session_state.page = "Games"
-    if st.sidebar.button("User Profiles"):
-        st.session_state.page = "User Profiles"
     if st.sidebar.button("Rankings"):
         st.session_state.page = "Rankings"
     if st.sidebar.button("Statistics"):
         st.session_state.page = "Statistics"
+    '''
+    if st.sidebar.button("Best moves"):
+        st.session_state.page = "Best Move"
+    '''
     if st.sidebar.button("Support"):
         st.session_state.page = "Support"
 
@@ -79,15 +81,15 @@ def display_sidebar():
     elif st.session_state.page == "Games":
         from games import display_games
         display_games()
-    elif st.session_state.page == "User Profiles":
-        from user_profiles import display_user_profiles
-        display_user_profiles()
     elif st.session_state.page == "Rankings":
         from rankings import display_rankings
         display_rankings()
     elif st.session_state.page == "Statistics":
         from statistics import display_statistics
         display_statistics()
+    #elif st.session_state.page == "Best Move":
+    #    from get_bestmove import fetch_and_display_best_move
+    #    fetch_and_display_best_move()
     elif st.session_state.page == "Support":
         from support import display_support
         display_support()

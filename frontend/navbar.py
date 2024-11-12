@@ -1,7 +1,6 @@
 import streamlit as st
 
 def display_sidebar():
-    # Custom CSS for sidebar
     st.markdown("""
         <style>
         .sidebar {
@@ -34,14 +33,11 @@ def display_sidebar():
         </style>
         """, unsafe_allow_html=True)
 
-    # Sidebar header
     st.sidebar.markdown("<div class='sidebar-title'>CONTENTS</div>", unsafe_allow_html=True)
 
-    # Initialize page variable if not already in session state
     if 'page' not in st.session_state:
-        st.session_state.page = "Home"  # Default to Home
+        st.session_state.page = "Home"  # Default 
 
-    # Navigation buttons
     if st.sidebar.button("Home"):
         st.session_state.page = "Home"
     if st.sidebar.button("Your Profile"): 
@@ -68,7 +64,6 @@ def display_sidebar():
         "page": "login"  
     })
         st.rerun()
-    # Display the selected page
     if st.session_state.page == "Home":
         from home import display_home
         display_home()

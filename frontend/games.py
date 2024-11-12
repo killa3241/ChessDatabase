@@ -12,7 +12,6 @@ def get_db_connection():
     )
 
 def fetch_all_games():
-    """Fetches all games from the database with detailed information."""
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     
@@ -47,13 +46,11 @@ def display_games():
     st.title("All Chess Games")
     st.markdown("### Explore all games stored in the database")
 
-    # Fetch all games
     games = fetch_all_games()
     
     if games:
         st.write(f"Total games found: {len(games)}")
         
-        # Display game details in a table format
         game_data = []
         for index, game in enumerate(games, start=1):
             game_data.append([
@@ -71,7 +68,6 @@ def display_games():
                 game['tournament_name'] if game['tournament_name'] else "N/A"
             ])
         
-        # Define columns for better readability
         columns = [
             "Index", "Game ID", "Date", "Player 1 (White)", "White ELO", 
             "Player 2 (Black)", "Black ELO", "Result", "Type", 
@@ -80,23 +76,18 @@ def display_games():
         
         df = pd.DataFrame(game_data, columns=columns)
         df = df.set_index("Index")
-        # Implement pagination
         items_per_page = 20
         total_items = len(df)
         total_pages = (total_items + items_per_page - 1) // items_per_page
 
-        # Create a pagination control
         page = st.number_input("Page", min_value=1, max_value=total_pages, step=1)
 
-        # Calculate start and end indices of the current page
         start_index = (page - 1) * items_per_page
         end_index = start_index + items_per_page
 
-        # Display the current page of data
         st.dataframe(df.iloc[start_index:end_index], use_container_width=True)
     else:
         st.warning("No games found in the database. Please add some games to view them here.")
 
-# Main function to run when this file is executed
 if __name__ == "__main__":
     display_games()

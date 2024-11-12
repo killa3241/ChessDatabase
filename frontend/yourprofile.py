@@ -1,7 +1,6 @@
 import streamlit as st
 import mysql.connector
 
-# Connect to the database
 def connect_to_db():
     return mysql.connector.connect(
         host="localhost",
@@ -10,13 +9,11 @@ def connect_to_db():
         database="chess_db"
     )
 
-# Fetch user data
 def get_user_info(cursor, email):
     query = "SELECT name, country, rating, online_profile, date_of_birth, gender FROM player WHERE email = %s"
     cursor.execute(query, (email,))
     return cursor.fetchone()
 
-# Update user data in the database
 def update_user_info(cursor, db, email, name, country, rating, online_profile, date_of_birth, gender):
     query = """
     UPDATE player
@@ -26,11 +23,9 @@ def update_user_info(cursor, db, email, name, country, rating, online_profile, d
     cursor.execute(query, (name, country, rating, online_profile, date_of_birth, gender, email))
     db.commit()
 
-# Display user profile and allow updates
 def display_profile():
     st.title("Your Profile")
 
-    # Ensure the user is logged in
     if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
         st.warning("Please log in to access your profile.")
         st.stop()
@@ -39,7 +34,6 @@ def display_profile():
     db = connect_to_db()
     cursor = db.cursor(dictionary=True)
 
-    # Get current user information
     user_info = get_user_info(cursor, email)
     
     if user_info:
@@ -51,7 +45,6 @@ def display_profile():
         st.text(f"Date of Birth: {user_info['date_of_birth'] if user_info['date_of_birth'] else 'Not set'}")
         st.text(f"Gender: {user_info['gender'] if user_info['gender'] else 'Not set'}")
 
-        # Form to update user information
         st.subheader("Update Your Information")
         name = st.text_input("Name", user_info['name'])
         country = st.text_input("Country", user_info['country'])
@@ -64,7 +57,6 @@ def display_profile():
             update_user_info(cursor, db, email, name, country, rating, online_profile, date_of_birth, gender)
             st.success("Your information has been updated!")
             
-            # Update session state if the name was changed
             if name:
                 st.session_state['user_name'] = name
 

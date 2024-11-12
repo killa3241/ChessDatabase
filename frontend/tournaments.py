@@ -6,7 +6,6 @@ def generate_tournament_id():
     """Generates a random 6-character uppercase tournament ID"""
     return uuid.uuid4().hex[:6].upper()
 
-# Database connection (adjust parameters as per your database configuration)
 def get_db_connection():
     connection = mysql.connector.connect(
         host="localhost",
@@ -21,7 +20,6 @@ def insert_tournament(name, date, duration, location, type, organizer):
     cursor = connection.cursor()
     
     tournament_id = generate_tournament_id()
-    # SQL query to insert tournament data
     query = """
     INSERT INTO tournament (tournament_id, name, date, duration, location, type, organizer)
     VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -37,7 +35,6 @@ def update_game_tournament_id(game_id, tournament_id):
     connection = get_db_connection()
     cursor = connection.cursor()
     
-    # SQL query to update the game with the tournament_id
     query = """
     UPDATE game SET tournament_id = %s WHERE game_id = %s
     """
@@ -52,7 +49,6 @@ def display_tournaments():
     st.write("""Here you can add tournaments.""")
     st.write("""Also you can find information about tournaments.""")
 
-    # Display form to add a new tournament
     st.subheader("Add a New Tournament")
     with st.form("tournament_form"):
         name = st.text_input("Tournament Name")
@@ -62,11 +58,9 @@ def display_tournaments():
         type = st.selectbox("Tournament Type", ['Round Robin', 'Knock Out', 'Swiss System', 'Scheveningen System'])
         organizer = st.text_input("Organizer", value="Unknown")
         
-        # Form submission
         submitted = st.form_submit_button("Submit")
         
         if submitted:
-            # Insert data into the database
             try:
                 insert_tournament(name, date, duration, location, type, organizer)
                 st.success(f"Tournament '{name}' added successfully!")
@@ -74,27 +68,23 @@ def display_tournaments():
                 st.error("Error adding tournament to database.")
                 st.write(e)
 
-    # Display form to add a game to a tournament
     st.subheader("Add a Game to a Tournament")
     with st.form("game_form"):
         game_id = st.text_input("Game ID")
         tournament_name = st.text_input("Tournament Name (for matching games)")
         
-        # Form submission
         submitted_game = st.form_submit_button("Assign Game to Tournament")
         
         if submitted_game:
             connection = get_db_connection()
             cursor = connection.cursor()
             
-            # Fetch the tournament_id using the tournament name
             cursor.execute("SELECT tournament_id FROM tournament WHERE name = %s", (tournament_name,))
             tournament = cursor.fetchone()
             
             if tournament:
                 tournament_id = tournament[0]
                 try:
-                    # Update the game with the tournament_id
                     update_game_tournament_id(game_id, tournament_id)
                     st.success(f"Game {game_id} has been assigned to tournament '{tournament_name}'")
                 except Exception as e:
@@ -105,7 +95,6 @@ def display_tournaments():
             cursor.close()
             connection.close()
 
-    # Display games for a specific tournament
     st.subheader("Display Games for a Tournament")
     tournament_name_to_display = st.text_input("Enter Tournament Name to Display Games")
     
@@ -114,7 +103,6 @@ def display_tournaments():
             connection = get_db_connection()
             cursor = connection.cursor(dictionary=True)
             
-            # Fetch games associated with the entered tournament name
             cursor.execute("""
             SELECT g.game_id, g.white_name, g.black_name, g.result
             FROM game g
@@ -135,19 +123,15 @@ def display_tournaments():
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     
-    # Fetch all tournaments from the database
     cursor.execute("SELECT tournament_id, name, date, duration, location, type, organizer FROM tournament")
     tournaments = cursor.fetchall()
     
     if tournaments:
-            # Convert the fetched data to a Pandas DataFrame
             df = pd.DataFrame(tournaments)
             
-            # Adding row numbers starting from 1
             df.index = df.index + 1
             df.index.name = 'Index'
             
-            # Display the DataFrame as a table
             st.dataframe(df, use_container_width=True)
         
     else:

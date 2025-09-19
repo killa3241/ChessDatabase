@@ -2,225 +2,212 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange.svg)](https://mysql.com)
-[![GUI](https://img.shields.io/badge/GUI-Desktop%20Ready-green.svg)](#)
-[![Analytics](https://img.shields.io/badge/Analytics-Powered-purple.svg)](#)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-red.svg)](https://streamlit.io)
+[![Analytics](https://img.shields.io/badge/Analytics-Enabled-purple.svg)](#)
 
-> **An intelligent chess database system that transforms historical game data into strategic insights and comprehensive analytics**
-
----
-
-## 🎯 **Project Vision & Impact**
-
-This isn't just a database—it's a **comprehensive chess intelligence platform**. Built to transform thousands of chess games into queryable, actionable insights, this system bridges the gap between raw PGN data and meaningful strategic analysis that can power educational tools, performance analytics, and chess research.
-
-### **Real-World Applications:**
-- **📊 Performance Analytics**: Deep insights into player strategies and game patterns
-- **🎓 Educational Tools**: Enables chess coaches to analyze and teach specific opening patterns
-- **🏆 Tournament Preparation**: Allows players to study opponent histories and prepare strategies
-- **📈 Chess Research**: Facilitates academic research with comprehensive game databases
+> **A chess database system for organizing game data and providing basic analytics**
 
 ---
 
-## 🚀 **Technical Excellence & Innovation**
+## 🎯 **Project Overview**
 
-### **🏗️ Intelligent Architecture**
-- **Custom PGN Parser**: Built from scratch to handle complex chess notation with 99.9% accuracy
-- **Optimized Database Design**: MySQL schema engineered for lightning-fast move queries and pattern recognition
-- **Advanced Analytics Engine**: Statistical analysis system for strategic insights and performance metrics
-- **Scalable Design**: Handles databases with 100K+ games without performance degradation
+A simple chess database system designed to help organize and analyze chess game data. The system processes PGN files and provides basic statistical insights that may be useful for studying games and tracking player performance.
 
-### **⚡ Performance Features**
-- **Real-Time Querying**: Sub-millisecond response times for move lookups
-- **Batch Processing**: Efficiently processes large PGN collections (1000+ games simultaneously)
-- **Memory Optimization**: Smart caching system for frequently accessed positions
-- **Advanced Search**: Complex filtering by player, opening, time period, and game outcomes
+### **Potential Use Cases:**
+- **📊 Basic Analytics**: View player statistics and game outcomes
+- **🎓 Learning Tool**: Help chess enthusiasts explore game data
+- **🏆 Game Organization**: Keep track of chess games in a structured way
+- **📈 Simple Research**: Basic analysis for chess study purposes
+
+---
+
+## 🚀 **Features & Implementation**
+
+### **🏗️ System Components**
+- **PGN Parser**: Processes chess notation files to extract game information
+- **Database Design**: MySQL schema for storing game data and metadata
+- **Analytics Module**: Basic statistical analysis for game insights
+- **Web Interface**: Streamlit-based dashboard for data visualization
+
+### **⚡ Core Functionality**
+- **File Processing**: Handles PGN file imports one at a time
+- **Data Storage**: Organizes chess games in a structured database
+- **Search & Filter**: Basic filtering by player, date, and game results
+- **Statistics**: Simple win/loss ratios and game count summaries
 
 ---
 
 ## 🎮 **System Demonstration**
+<img width="940" height="375" alt="image" src="https://github.com/user-attachments/assets/a8034ce1-9a86-4943-9bb7-340a848d5a8b" />
+<img width="940" height="571" alt="image" src="https://github.com/user-attachments/assets/ef93b2f6-0356-48bd-9cf3-6935232be729" />
 
 ### **PGN Processing Pipeline**
-*Watch the system automatically parse and organize thousands of chess games into a structured, queryable format*
-
-![PGN Processing](assets/pgn-processing.gif)
+<img width="940" height="439" alt="image" src="https://github.com/user-attachments/assets/b8cbe14e-130e-4e82-81f8-f714f30847c1" />
 
 ### **Database Query Interface**
-*The GUI demonstrates real-time database queries with advanced filtering and search capabilities*
+*The Streamlit interface provides database queries with basic filtering and search options*
+<img width="940" height="446" alt="image" src="https://github.com/user-attachments/assets/cb2524ee-4e01-4d1a-8afe-d61de74ea7c6" />
+<img width="940" height="347" alt="image" src="https://github.com/user-attachments/assets/607384ad-e8a7-4056-9d45-51bb81345d45" />
+<img width="940" height="408" alt="image" src="https://github.com/user-attachments/assets/938ac1a7-3d3c-4574-aa3c-98ec10feb583" />
 
-![Query Interface](assets/database-queries.png)
-
-### **Strategic Analytics Dashboard**
-*Visual representation of player statistics, opening preferences, and winning patterns*
-
-![Analytics Dashboard](assets/analytics-dashboard.png)
-
-### **Game Analysis Interface**
-*Interactive game browser with move-by-move analysis and statistical insights*
-
-![Game Analysis](assets/game-analysis.png)
+### **Analytics Dashboard**
+*Basic visualization of player statistics and game data*
+<img width="940" height="335" alt="image" src="https://github.com/user-attachments/assets/5655706f-62d7-4bb0-89b7-6a2235b980c6" />
+<img width="940" height="321" alt="image" src="https://github.com/user-attachments/assets/a4b2eb9b-77f3-442b-9daa-7dc1f0cf27ef" />
+<img width="940" height="215" alt="image" src="https://github.com/user-attachments/assets/7957ec8d-56fc-4782-9412-59eda10f6e7c" />
 
 ---
 
-## 🛠️ **Advanced Technology Stack**
+## 🛠️ **Technology Stack**
 
 <div align="center">
 
 | **Component** | **Technology** | **Purpose** |
 |---------------|----------------|-------------|
-| **Database Engine** | ![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange) | Optimized for chess data relationships |
-| **Backend Logic** | ![Python](https://img.shields.io/badge/Python-3.8+-blue) | Custom algorithms for chess analysis |
-| **GUI Framework** | ![Tkinter](https://img.shields.io/badge/Tkinter/PyQt-Desktop-green) | Professional desktop interface |
-
+| **Database** | ![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange) | Store chess game data |
+| **Backend** | ![Python](https://img.shields.io/badge/Python-3.8+-blue) | Data processing and analysis |
+| **Frontend** | ![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-red) | Web-based user interface |
 
 </div>
 
 ---
 
-## 🔮 **Intelligent Features**
+## 🔍 **Available Features**
 
-### **🧠 Advanced Analytics**
-- **Opening Analysis**: Identifies most successful openings by player rating and game outcome
-- **Pattern Recognition**: Discovers recurring tactical motifs and strategic themes  
-- **Performance Tracking**: Builds comprehensive profiles of player improvement over time
-- **Statistical Insights**: Win rates, average game length, and opening success metrics
+### **📊 Basic Analytics**
+- **Opening Tracking**: See which openings appear most frequently in your database
+- **Player Statistics**: View win/loss records and game counts for different players
+- **Time Period Analysis**: Filter games by date ranges
+- **Simple Insights**: Basic statistics like average game length and outcome distributions
 
-### **🎯 Strategic Querying**
-- **Position Search**: Find all games reaching specific board positions
-- **Player Analytics**: Deep-dive statistics on individual player performance
-- **Time-Based Analysis**: Track trends and improvements over different time periods
-- **Opening Repertoire**: Build comprehensive opening databases from historical data
+### **🎯 Data Management**
+- **Single File Import**: Process one PGN file at a time
+- **Player Search**: Look up games by specific players
+- **Date Filtering**: Find games within certain time periods
+- **Result Analysis**: Group games by outcomes (win/loss/draw)
 
-### **📊 Data Management**
-- **Bulk Import**: Process thousands of PGN files automatically
-- **Data Validation**: Ensure game integrity and detect corrupted entries
-- **Export Capabilities**: Generate custom datasets for further analysis
-- **Backup & Recovery**: Automated database backup and restoration systems
+### **📋 Database Operations**
+- **PGN Processing**: Import chess games from standard PGN format
+- **Data Validation**: Basic checks for game data integrity  
+- **Simple Queries**: Search and filter functionality
+- **Export Options**: Basic data export capabilities
 
 ---
 
-## ⚡ **Quick Start Guide**
+## ⚡ **Getting Started**
 
-### **🚀 One-Command Setup**
+### **🚀 Setup**
 
 ```bash
-# Clone and initialize the complete environment
+# Clone the repository
 git clone https://github.com/your-username/chess-database-management.git
 cd chess-database-management
-chmod +x setup.sh && ./setup.sh
 ```
 
-### **📊 Database Configuration**
+### **📊 Database Setup**
 
 ```bash
 # Set up MySQL database
-mysql -u root -p -e "CREATE DATABASE chess_analytics;"
-mysql -u root -p chess_analytics < backend/sql/schema.sql
+mysql -u root -p -e "CREATE DATABASE chess_db;"
+mysql -u root -p chess_db < backend/sql/schema.sql
 
 # Configure database connection
 cp config/database.example.py config/database.py
 # Edit database.py with your credentials
 ```
 
-### **🎲 Load Sample Data**
+### **🎲 Import Sample Data**
 
 ```bash
-# Process a PGN file (example with 10,000+ games)
+# Process a single PGN file
 python backend/pgn_parser.py data/sample_games.pgn
-
 ```
 
-### **🖥️ Launch Application**
+### **🖥️ Run the Application**
 
 ```bash
-# Start the GUI interface
-python frontend/app.py
-
+# Start the Streamlit web interface
+streamlit run frontend/app.py
 ```
 
 ---
 
-## 📁 **Professional Project Architecture**
+## 📁 **Project Structure**
 
 ```
 chess-database-management/
 ├── 🗄️ backend/
-│   ├── core/
-│   │   ├── pgn_parser.py           # Advanced PGN processing engine
-│   │   ├── database_manager.py     # Optimized MySQL operations
-│   │   └── chess_analyzer.py       # Strategic analysis algorithms
-│   ├── analytics/
-│   │   ├── player_stats.py         # Individual player analysis
-│   │   ├── opening_analyzer.py     # Opening performance metrics
-│   │   └── game_patterns.py        # Pattern recognition engine
+│   ├── __pycache__/                # Python cache files
 │   └── sql/
-│       ├── schema.sql              # Optimized database schema
-│       ├── indexes.sql             # Performance optimization
-│       └── procedures.sql          # Stored procedures for complex queries
+│       ├── schema.sql              # Database schema
+│       └── pgn_parser.py           # PGN file processing
 ├── 🖥️ frontend/
-│   ├── gui/
-│   │   ├── main_application.py     # Primary GUI controller
-│   │   ├── analytics_dashboard.py  # Strategic visualization
-│   │   └── game_browser.py         # Interactive game explorer
-│   ├── assets/
-│   │   ├── icons/                  # Professional UI assets
-│   │   └── themes/                 # Customizable interface themes
-│   └── utils/
-│       └── visualization.py        # Advanced plotting and charts
-├── 📊 data/
-│   ├── sample_pgns/                # Example game collections
-│   ├── opening_books/              # Curated opening databases
-│   └── player_profiles/            # Historical player data
-├── 🔧 config/
-│   ├── database_config.py          # Database connection settings
-│   ├── analytics_parameters.py     # Analysis configurations
-│   └── logging_config.py           # Comprehensive system logging
-└── 📋 tests/
-    ├── unit_tests/                 # Component testing suite
-    ├── integration_tests/          # Full system validation
-    └── performance_benchmarks/     # Speed and efficiency tests
+│   ├── __pycache__/                # Python cache files
+│   └── streamlit/
+│       ├── secrets.toml            # Streamlit configuration
+│       ├── assets/
+│       │   └── icons/
+│       │       ├── game.png        # Game page icon
+│       │       ├── profiles.png    # Player profiles icon
+│       │       ├── ranking.png     # Rankings icon
+│       │       ├── settings.png    # Settings icon
+│       │       ├── statistics.png  # Statistics icon
+│       │       ├── support.png     # Support icon
+│       │       ├── tournament.png  # Tournament icon
+│       │       └── user.png        # User profile icon
+│       ├── admin.py                # Admin interface
+│       ├── app.py                  # Main Streamlit application
+│       ├── db_utils.py             # Database utility functions
+│       ├── games.py                # Game management page
+│       ├── home.py                 # Home page
+│       ├── login.py                # Login functionality
+│       ├── navbar.py               # Navigation bar component
+│       ├── rankings.py             # Player rankings page
+│       ├── statistics.py           # Statistics dashboard
+│       ├── support.py              # Support page
+│       ├── tournaments.py          # Tournament management
+│       └── yourprofile.py          # User profile page
+├── .gitignore                      # Git ignore file
+└── README.md                       # Project documentation
 ```
 
 ---
 
+## 💡 **Future Ideas**
+
+### **🔮 Possible Improvements**
+- [ ] **Better Visualization**: More interactive charts and graphs
+- [ ] **Export Features**: Additional data export formats
+- [ ] **Mobile View**: Better mobile browser compatibility
+- [ ] **Batch Processing**: Handle multiple PGN files at once
+
+### **🚀 Potential Enhancements**
+- [ ] **Pattern Detection**: Simple tactical pattern recognition
+- [ ] **Tournament View**: Group games by tournaments
+- [ ] **Player Profiles**: More detailed player information pages
+- [ ] **API Development**: Simple REST API for data access
 
 ---
 
-## 💡 **Future Roadmap**
+## 📋 **About This Project**
 
-### **🔮 Immediate Enhancements**
-- [ ] **Advanced Visualization**: Interactive chess board with move animations
-- [ ] **Export Features**: Generate custom reports and statistical summaries
-- [ ] **Web Interface**: Browser-based dashboard for remote access
-- [ ] **Mobile Companion**: iOS/Android app for game analysis on-the-go
+### **💼 Purpose**
+- **Learning Project**: Built to explore database design and web development
+- **Chess Enthusiast Tool**: Simple utility for organizing chess game data
+- **Open Source**: Available for others to learn from and improve upon
+- **Educational**: Demonstrates basic concepts in data management and visualization
 
-### **🚀 Advanced Analytics Goals**
-- [ ] **Machine Learning**: Pattern recognition for tactical motif detection
-- [ ] **Tournament Analysis**: Comprehensive tournament performance tracking
-- [ ] **Opening Preparation**: Automated repertoire building and analysis
-- [ ] **Psychological Profiling**: Player tendency analysis and prediction models
-
----
-
-## 🏅 **Why This Project Stands Out**
-
-### **💼 Business Value**
-- **Scalable Architecture**: Designed to handle enterprise-level chess databases
-- **Educational Focus**: Perfect for chess schools, clubs, and coaching platforms
-- **Research Ready**: Comprehensive data structure supports academic chess research
-- **Performance Optimized**: Production-ready code with extensive testing
-
-### **🔬 Technical Innovation**
-- **Custom PGN Parser**: Handles complex notations and variations other parsers miss
-- **Database Optimization**: Novel indexing strategies specifically for chess positions
-- **Cross-Platform**: Seamless operation on Windows, macOS, and Linux
-
-
+### **🔧 Technical Notes**
+- **Simple Design**: Focuses on core functionality over advanced features
+- **Standard Tools**: Uses well-established technologies and libraries
+- **Beginner Friendly**: Code structure aims to be readable and educational
+- **Cross-Platform**: Works on different operating systems with Python support
 
 <div align="center">
 
-**⭐ Star this repository if you found it valuable!**
+**⭐ If you find this project helpful, feel free to star it!**
 
-*Engineered for comprehensive chess analysis and strategic insights*
+*A simple tool for chess game organization and basic analysis*
 
 [![GitHub stars](https://img.shields.io/github/stars/your-username/chess-database-management?style=social)](https://github.com/your-username/chess-database-management)
 
@@ -242,4 +229,4 @@ This project is licensed under the MIT License. If you use this system in your r
 }
 ```
 
-**Built with ♟️ for advancing chess analysis and strategic understanding**
+**Built with ♟️ for organizing and exploring chess game data**

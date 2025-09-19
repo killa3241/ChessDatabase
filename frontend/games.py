@@ -1,48 +1,50 @@
+# File: frontend/games.py
+
 import streamlit as st
 import mysql.connector
 import pandas as pd
-
-# Function to connect to the database
-def get_db_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="chess_user",
-        password="user123",
-        database="chess_db"
-    )
+from db_utils import connect_to_db
 
 def fetch_all_games():
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    
-    query = """
-    SELECT 
-        g.game_id,
-        g.date,
-        g.white_name AS player1,
-        p1.rating AS white_elo,
-        g.black_name AS player2,
-        p2.rating AS black_elo,
-        g.result,
-        g.type,
-        g.number_of_moves,
-        g.termination,
-        t.name AS tournament_name
-    FROM game g
-    LEFT JOIN player p1 ON g.white_id = p1.player_id
-    LEFT JOIN player p2 ON g.black_id = p2.player_id
-    LEFT JOIN tournament t ON g.tournament_id = t.tournament_id
-    ORDER BY g.date DESC, g.game_id
-    """
-    
-    cursor.execute(query)
-    games = cursor.fetchall()
-    
-    cursor.close()
-    connection.close()
-    return games
+    """Fetches all game data from the database."""
+    try:
+        connection = connect_to_db()
+        cursor = connection.cursor(dictionary=True)
+        
+        query = """
+        SELECT 
+            g.game_id,
+            g.date,
+            g.white_name AS player1,
+            p1.rating AS white_elo,
+            g.black_name AS player2,
+            p2.rating AS black_elo,
+            g.result,
+            g.type,
+            g.number_of_moves,
+            g.termination,
+            t.name AS tournament_name
+        FROM game g
+        LEFT JOIN player p1 ON g.white_id = p1.player_id
+        LEFT JOIN player p2 ON g.black_id = p2.player_id
+        LEFT JOIN tournament t ON g.tournament_id = t.tournament_id
+        ORDER BY g.date DESC, g.game_id
+        """
+        
+        cursor.execute(query)
+        games = cursor.fetchall()
+        
+        return games
+    except mysql.connector.Error as err:
+        st.error(f"Error fetching games: {err}")
+        return []
+    finally:
+        if 'connection' in locals() and connection.is_connected():
+            cursor.close()
+            connection.close()
 
 def display_games():
+    """Renders the Games page with a table of all games."""
     st.title("All Chess Games")
     st.markdown("### Explore all games stored in the database")
 
@@ -51,41 +53,24 @@ def display_games():
     if games:
         st.write(f"Total games found: {len(games)}")
         
-        game_data = []
-        for index, game in enumerate(games, start=1):
-            game_data.append([
-                index,
-                game['game_id'],
-                game['date'],
-                game['player1'],
-                game['white_elo'],
-                game['player2'],
-                game['black_elo'],
-                game['result'],
-                game['type'],
-                game['number_of_moves'],
-                game['termination'],
-                game['tournament_name'] if game['tournament_name'] else "N/A"
-            ])
+        df = pd.DataFrame(games)
+        df.rename(columns={
+            'game_id': 'Game ID',
+            'date': 'Date',
+            'player1': 'White Player',
+            'white_elo': 'White ELO',
+            'player2': 'Black Player',
+            'black_elo': 'Black ELO',
+            'result': 'Result',
+            'type': 'Type',
+            'number_of_moves': 'Moves',
+            'termination': 'Termination',
+            'tournament_name': 'Tournament'
+        }, inplace=True)
         
-        columns = [
-            "Index", "Game ID", "Date", "Player 1 (White)", "White ELO", 
-            "Player 2 (Black)", "Black ELO", "Result", "Type", 
-            "Total Moves", "Termination", "Tournament"
-        ]
+        df = df.fillna('N/A')
         
-        df = pd.DataFrame(game_data, columns=columns)
-        df = df.set_index("Index")
-        items_per_page = 20
-        total_items = len(df)
-        total_pages = (total_items + items_per_page - 1) // items_per_page
-
-        page = st.number_input("Page", min_value=1, max_value=total_pages, step=1)
-
-        start_index = (page - 1) * items_per_page
-        end_index = start_index + items_per_page
-
-        st.dataframe(df.iloc[start_index:end_index], use_container_width=True)
+        st.dataframe(df, use_container_width=True)
     else:
         st.warning("No games found in the database. Please add some games to view them here.")
 

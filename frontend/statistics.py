@@ -1,17 +1,16 @@
+# File: frontend/statistics.py
+
 import streamlit as st
-import mysql.connector
 import pandas as pd
+import mysql.connector
+from db_utils import connect_to_db
 
 def get_player_statistics(player_id):
-    connection = mysql.connector.connect(
-        host='localhost',
-        user='chess_user',
-        password='user123',
-        database='chess_db'
-    )
-    cursor = connection.cursor(dictionary=True) 
-
+    """Calls a MySQL stored procedure to fetch player statistics."""
+    connection = None
     try:
+        connection = connect_to_db()
+        cursor = connection.cursor(dictionary=True) 
         cursor.callproc('get_player_statistics', [player_id])
         
         for result in cursor.stored_results():
@@ -19,14 +18,14 @@ def get_player_statistics(player_id):
             if data:
                 df = pd.DataFrame(data)
                 return df
-            return None
-            
+        return None
     except mysql.connector.Error as err:
         st.error(f"Error fetching statistics: {err}")
         return None
     finally:
-        cursor.close()
-        connection.close()
+        if connection and connection.is_connected():
+            cursor.close()
+            connection.close()
 
 def display_statistics():
     st.title("Chess Player Statistics")

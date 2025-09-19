@@ -1,4 +1,4 @@
-# support.py
+# File: frontend/support.py
 
 import streamlit as st
 
@@ -11,3 +11,6 @@ def display_support():
     
     st.write("### Contact Us")
     st.write("Email: akshaysimha04@gmail.com","Email: anikaitmohan04@gmail.com")
+
+if __name__ == "__main__":
+    display_support()

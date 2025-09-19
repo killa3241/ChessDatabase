@@ -1,10 +1,5 @@
-# ♟️ Chess-Database-For-Robot
 
-A Chess Database Management System designed to support a robot that plays against users using historical chess game data.
-
-## 📚 Overview
-
-**Chess-Database-For-Robot** is a backend-focused project that uses a structured MySQL database to store and manage chess games, player profiles, and move data. It includes a custom PGN parser to extract games from `.pgn` files and populate the database automatically.
+**Chess-Database-Management-System** is a backend-focused project that uses a structured MySQL database to store and manage chess games, player profiles, and move data. It includes a custom PGN parser to extract games from `.pgn` files and populate the database automatically.
 
 This project is designed to power a robot (or AI system) that can query the database in real-time to play intelligently against human users by learning from past strategies.
 

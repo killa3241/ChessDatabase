@@ -70,8 +70,7 @@ This isn't just a database—it's a **comprehensive chess intelligence platform*
 | **Database Engine** | ![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange) | Optimized for chess data relationships |
 | **Backend Logic** | ![Python](https://img.shields.io/badge/Python-3.8+-blue) | Custom algorithms for chess analysis |
 | **GUI Framework** | ![Tkinter](https://img.shields.io/badge/Tkinter/PyQt-Desktop-green) | Professional desktop interface |
-| **Data Processing** | ![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-red) | Efficient game data manipulation |
-| **Chess Logic** | ![Python Chess](https://img.shields.io/badge/python--chess-Game%20Engine-yellow) | Legal move validation and analysis |
+
 
 </div>
 
@@ -128,8 +127,6 @@ cp config/database.example.py config/database.py
 # Process a PGN file (example with 10,000+ games)
 python backend/pgn_parser.py data/sample_games.pgn
 
-# Verify data loading
-python backend/validate_database.py
 ```
 
 ### **🖥️ Launch Application**
@@ -138,8 +135,6 @@ python backend/validate_database.py
 # Start the GUI interface
 python frontend/app.py
 
-# Or run command-line analytics
-python backend/analytics_cli.py --player "Magnus Carlsen" --analyze-openings
 ```
 
 ---
@@ -187,46 +182,6 @@ chess-database-management/
 
 ---
 
-## 🏆 **Performance Metrics & Achievements**
-
-| **Metric** | **Standard Systems** | **Our Implementation** | **Improvement** |
-|------------|---------------------|----------------------|-----------------|
-| **PGN Parsing Speed** | ~500 games/min | **~5,000 games/min** | **10x faster** |
-| **Query Response Time** | 200-500ms | **<50ms** | **4-10x faster** |
-| **Database Size Efficiency** | 100MB/1K games | **25MB/1K games** | **4x more efficient** |
-| **Concurrent Users** | 5-10 users | **50+ users** | **5x more scalable** |
-| **Memory Usage** | 512MB baseline | **128MB baseline** | **4x more efficient** |
-
----
-
-## 🎯 **Advanced Use Cases**
-
-### **📊 Strategic Analysis**
-```python
-# Example: Analyze player opening preferences
-from chess_db import PlayerAnalytics
-
-analyzer = PlayerAnalytics()
-opening_stats = analyzer.analyze_openings(
-    player_name="Magnus Carlsen",
-    time_period="2020-2024",
-    min_games=10,
-    include_success_rate=True
-)
-```
-
-### **🔍 Position-Based Queries**
-```python
-# Find all games with specific positions
-from chess_db import PositionQuery
-
-query = PositionQuery()
-similar_games = query.find_games_by_position(
-    fen="rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1",
-    min_rating=2000,
-    result_filter="1-0"
-)
-```
 
 ---
 
@@ -257,7 +212,6 @@ similar_games = query.find_games_by_position(
 ### **🔬 Technical Innovation**
 - **Custom PGN Parser**: Handles complex notations and variations other parsers miss
 - **Database Optimization**: Novel indexing strategies specifically for chess positions
-- **Statistical Engine**: Advanced analytics beyond simple win/loss tracking
 - **Cross-Platform**: Seamless operation on Windows, macOS, and Linux
 
 
@@ -280,7 +234,7 @@ This project is licensed under the MIT License. If you use this system in your r
 
 ```bibtex
 @software{chess_database_management,
-  author = {Your Name},
+  author = {Anikait},
   title = {Chess Database Management System},
   year = {2024},
   publisher = {GitHub},
